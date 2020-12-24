@@ -6,7 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import queryString from 'query-string'
 
 // const serverUrl = 'http://localhost:8080';
-const serverUrl = 'http://calsync-env.eba-wsszxvch.us-east-1.elasticbeanstalk.com';
+const serverUrl = 'https://calsync-env.eba-wsszxvch.us-east-1.elasticbeanstalk.com';
 const localizer = momentLocalizer(moment)
 
 function App() {
