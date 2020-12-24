@@ -7,12 +7,17 @@ import queryString from 'query-string'
 
 // const serverUrl = 'http://localhost:8080';
 const serverUrl = 'https://calsync-env.eba-wsszxvch.us-east-1.elasticbeanstalk.com';
+const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&' +
+                 'scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.readonly%20email&' +
+                 'response_type=code&' +
+                 'client_id=809758834696-bnm6pb62roqcv967j2s68t9qrbloindl.apps.googleusercontent.com&' +
+                 `redirect_uri=${serverUrl}%2Foauth2callback`
 const localizer = momentLocalizer(moment)
+
+console.log('authUrl: ', authUrl);
 
 function App() {
   const [events, setEvents] = useState();
-  const [authUrl, setAuthUrl] = useState();
-
   const {email} = queryString.parse(window.location.search);
 
   useEffect(() => {
@@ -20,17 +25,13 @@ function App() {
       .then(res => res.json())
       .then(res => setEvents(res))
       .catch(err => console.log(err));
-    !authUrl && fetch(serverUrl + `/authUrl`)
-      .then(res => res.json())
-      .then(res => setAuthUrl(res.authUrl))
-      .catch(err => console.log(err));
   })
 
   function authCalendar() {
     window.location.replace(authUrl);
   }
 
-  const rbcEvents = events && events.filter((event) => {
+  const rbcEvents = (events && events.filter((event) => {
     // return false;
     return event.event_obj.start && event.event_obj.start.dateTime && 
            event.event_obj.end && event.event_obj.end.dateTime &&
@@ -43,12 +44,12 @@ function App() {
       allDay: false,
       id: i
     }
-  }) || []
+  })) || []
   console.log(rbcEvents);
 
   return (
         <div>
-          {authUrl && !email && 
+          {!email && 
             <button 
               id="authorize-calendar-button" 
               onClick={authCalendar}
